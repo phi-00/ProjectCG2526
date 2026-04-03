@@ -1,0 +1,7 @@
+A pasta Samples é colocada diretamente em: 
+
+C:\Program Files\Epic Games\UE_5.7
+
+E o ficheiro .upack é colocado em:
+ 
+C:\Program Files\Epic Games\UE_5.7\FeaturePacks

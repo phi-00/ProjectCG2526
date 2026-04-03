@@ -1,0 +1,9 @@
+[9820:19352:0403/164040.648:WARNING:chrome_main_delegate.cc(745)] This is Chrome version 128.0.6613.138 (not a warning)
+[9820:17716:0403/164040.970:ERROR:google_update_settings.cc(265)] Failed opening key Software\Chromium to set usagestats; result: 5
+[9820:19352:0403/164041.092:WARNING:account_consistency_mode_manager.cc(77)] Desktop Identity Consistency cannot be enabled as no OAuth client ID and client secret have been configured.
+[9820:19352:0403/164054.463:WARNING:page_discarding_helper.cc(138)] Discarding multiple pages with target (kb): 0
+[9820:19352:0403/164054.923:ERROR:device_event_log_impl.cc(196)] [16:40:54.915] USB: usb_service_win.cc:105 SetupDiGetDeviceProperty({{A45C254E-DF1C-4EFD-8020-67D146A850E0}, 6}) failed: Elemento não encontrado. (0x490)
+[1352:19240:0403/164055.675:ERROR:ssl_client_socket_impl.cc(882)] handshake failed; returned -1, SSL error code 1, net_error -101
+[1352:19240:0403/164055.813:ERROR:ssl_client_socket_impl.cc(882)] handshake failed; returned -1, SSL error code 1, net_error -101
+[1352:19240:0403/164055.839:ERROR:ssl_client_socket_impl.cc(882)] handshake failed; returned -1, SSL error code 1, net_error -101
+[9820:19352:0403/164254.844:WARNING:pref_notifier_impl.cc(41)] Pref observer for media_router.cast_allow_all_ips found at shutdown.
