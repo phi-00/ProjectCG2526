@@ -89,7 +89,7 @@ The resulting 3D model was then prepared for integration into Unreal Engine, whe
 \label{fig:final_result_pen}
 \end{figure}
 
-\section{Unreal Engine Scenario Creation and Synthetic Dataset}
+\section{Unreal Engine Scenario Creation}
 
 After reconstructing the 3D model of the pen, the next stage consisted of creating the virtual environments used for synthetic data generation.
 
@@ -97,9 +97,7 @@ The scenarios were developed in Unreal Engine based on the previously collected 
 
 The reconstructed pen model was placed inside these environments with different orientations and positions. By modifying scene parameters such as lighting, camera angle, and object placement, multiple variations of the same scenario were generated.
 
-This approach allows the creation of a diverse synthetic dataset while maintaining complete control over the conditions in which the object appears.
-
-Multiple virtual scenarios were created based on the previously collected environment references. Variations were introduced in camera position, object orientation, lighting conditions, background elements, and object placement.
+This approach would allow the creation of a diverse synthetic dataset while maintaining complete control over the conditions in which the object appears.
 
 The purpose of this stage was to create a dataset containing diverse examples of the pen under different conditions. These images simulate the variability normally present in real-world image acquisition and provide training data for the object detection model.
 
@@ -150,11 +148,17 @@ The values are normalized according to the image dimensions, allowing YOLO to pr
 
 \section{Synthetic Dataset Annotation}
 
-Unfortenatly due to the lack of time and the fact that Unreal Engine kept giving us problems, we were unable to run a script on Unreal Engine in where it would generate photos of the different scenarios and positions in where the pen could be.
+After reconstructing the 3D model of the pen, the next stage consisted of creating the synthetic data generation in Unreal Engine. The initial objective of this stage was to fully automate the dataset creation process by developing a script capable of controlling both camera and object movement, allowing the generation of diverse images with automatically exported YOLO annotations.
 
-The idea was to move both the pen and the camera in different scenarios, making sure that the pen is within the camera's lens, and run the script to recreate a limited number of images of such scenarios (between 100 or less images) and then switch to a different place of the map. While at the same time, the script would also generate the YOLO annotation of the image obtained in a different folder to not mix up the images with the text file.
+The intended pipeline would involve moving the pen and camera across different positions and orientations within the scene, ensuring that the object remained within the camera field of view. Each configuration would then be rendered as an image, while a corresponding script would automatically generate YOLO-format annotation files, storing them separately from the images to avoid inconsistencies between data and labels.
 
-But as said, due to the lack of time, we took a few images from the map that we had created to do the datset and used again the labelImg to help in creating the YOLO annotations (Figure~\ref{fig:labelimg_synthetic}).
+However, due to technical limitations in Unreal Engine and time constraints, the full automation of this process could not be achieved. As a result, the dataset generation pipeline was simplified. A limited number of images were manually captured from the created Unreal Engine environments, ensuring variability in object position, camera angle, and lighting conditions.
+
+These images were then incorporated into the synthetic dataset and manually annotated using the LabelImg tool, generating YOLO-compatible bounding box labels for each image (Figure~\ref{fig:labelimg_synthetic}). Although this approach reduced scalability compared to the original plan, it still allowed the creation of a functional synthetic dataset suitable for training and evaluation.
+
+Despite the lack of full automation, the synthetic dataset still preserved important characteristics such as variation in viewpoint, illumination, and background complexity. These factors ensured that the dataset remained useful for evaluating the impact of synthetic data in object detection tasks.
+
+The final synthetic dataset was therefore composed of Unreal Engine-rendered images combined with manually generated YOLO annotations, providing the necessary structure for training the object detection models used in this work.
 
 \begin{figure}[h]
 \centering
@@ -194,7 +198,7 @@ Three different experimental setups were defined to evaluate the influence of sy
 
 \item \textbf{Synthetic dataset training:} The model was trained using images generated from the Unreal Engine environment.
 
-\item \textbf{Combined dataset:} Both datasets would be merged to evaluate whether synthetic images improve detection performance. However, due to time limitations, this experiment was not performed.
+\item \textbf{Combined dataset training (real + synthetic fusion):} Although a unified training experiment combining real and synthetic datasets was initially planned, it was not executed as a single merged training pipeline due to time and implementation constraints. However, a cross-domain evaluation was performed where the synthetic-trained model was tested on real images, providing insight into how synthetic data generalizes to real-world conditions.
 
 \end{itemize}
 
@@ -206,7 +210,7 @@ The goal of this stage was to evaluate whether synthetic data alone can support 
 
 After the training stage, the performance of the trained YOLOv8 models was evaluated using the validation framework provided by the Ultralytics library. The evaluation was performed automatically during and after training, generating multiple outputs including precision, recall, mean average precision values, confidence curves, confusion matrices, and prediction visualizations.
 
-Instead of manually extracting individual metrics, the trained models were evaluated through the YOLO validation pipeline:
+Instead of manually extracting individual metrics, the trained models were evaluated through the YOLO validation pipeline of this style:
 
 \begin{verbatim}
 results = model.val(data="dataset.yaml")
@@ -276,7 +280,7 @@ The final obtained results are summarized below:
 
 Real & Real Test & 0.999 & 1.000 & 0.995 \\
 
-Synthetic & Synthetic Test & 0.993 & 0.995 & 0.995 \\
+Synthetic & Synthetic Test & 1.000 & 0.993 & 0.995 \\
 
 Synthetic & Real Test & 0.734 & 0.848 & 0.758 \\
 
@@ -299,8 +303,8 @@ These results were expected because the training and testing images belong to th
 The synthetic-to-synthetic experiment achieved very similar results:
 
 \begin{itemize}
-    \item Precision: 0.993
-    \item Recall: 0.995
+    \item Precision: 1.000
+    \item Recall: 0.993
     \item mAP0.5: 0.995
     \item mAP0.5-0.95: 0.733
 \end{itemize}
@@ -330,7 +334,7 @@ The training batch visualizations confirm that the images were correctly associa
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.45\textwidth]{img/train_batch1.jpg}
+\includegraphics[width=0.35\textwidth]{img/train_batch1.jpg}
 \caption{Training samples generated during YOLO training.}
 \label{fig:train_batch}
 \end{figure}
@@ -361,14 +365,14 @@ The precision-recall curve confirms the same behaviour, showing that the model m
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.45\textwidth]{img/BoxP_curve.png}
+\includegraphics[width=0.50\textwidth]{img/BoxP_curve.png}
 \caption{Precision-confidence curve.}
 \end{figure}
 
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.45\textwidth]{img/BoxR_curve.png}
+\includegraphics[width=0.50\textwidth]{img/BoxR_curve.png}
 \caption{Recall-confidence curve.}
 \end{figure}
 
@@ -390,7 +394,7 @@ The precision-recall curve confirms the same behaviour, showing that the model m
 
 \subsection{Confusion Matrix Analysis}
 
-The confusion matrices were analysed for each experiment.
+The confusion matrices (Figure~\ref{fig:confusion}) were analysed for each experiment.
 
 However, because only one object class was used, the confusion matrices provide limited information. The main classification problem was distinguishing the pen from the background rather than separating multiple object categories.
 
@@ -400,6 +404,7 @@ The matrices mainly confirm the difference in false detections between the same-
 \centering
 \includegraphics[width=0.45\textwidth]{img/confusion_matrix.png}
 \caption{Confusion matrix obtained during evaluation.}
+\label{fig:confusion}
 \end{figure}
 
 
