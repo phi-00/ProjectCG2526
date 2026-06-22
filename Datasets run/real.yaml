@@ -16,7 +16,7 @@ names:
   14: ''
   15: pen
 path: "c:\\Users\\Asus\\Documents\\Andr\xE9\\universidade\\Mestrado\\projeto_cg\\\
-  ProjectCG2526\\Datasets run\\YOLO_REAL"
+  Datasets run\\YOLO_REAL"
 test: images/test
 train: images/train
 val: images/val
